@@ -19,33 +19,27 @@ For simplicity under time constraints, this database uses one-to-many relationsh
 
 ## Endpoints
 
-There are 3 endpoints available in this API:
+There are 3 endpoints available in this API. The database is also seeded with 3 customers, and 3 teas.
 
-### POST /api/v1/customers
-The `POST /api/v1/customer` endpoint is used for creating a customer within the database which is required for the functionality of the rest of the app. The endpoint requires a request body who's structure is that of the following:
+### GET /api/v1/subscriptions
+The endpoint requires a request body with the following:
 
 ```json
 {
-  "first_name": "Hubert",
-  "last_name": "Roberts",
-  "email": "hubertroberts@test.com",
-  "address": "399 S. Layoni"
+  "customer_id": 1
 }
 ```
-
-The API will tell you if a necessary field is missing, or if the email provided has already been taken - otherwise, you will receive a successful response with a serialized set of a data regarding the new user.
 
 ### POST /api/v1/subscriptions
-The `POST /api/v1/subscriptions` endpoint is used for creating a new subscription for a given user - currently, the API is limited to a single tea which is through it's `title` attribute within the database (only 3 types of tea exist by default when setting up the application, being `"Matcha"`, `"Yerba Mate"`, and `"Green Tea"`). The frequency of a subscription is represented with `0`, `1`, `2`, which translate to `weekly`, `biweekly`, and `monthly` due to an enum within the `subscription` model. The endpoint requires a request body who's structure is that of the following:
+This endpoint is used for creating a new subscription for a customer. The frequency of a subscription can be `weekly`, `biweekly`, or `monthly`, and the total_price for the subscription will be calculated based on the frequency and tea price. The endpoint requires a request body of the following:
 
 ```json
 {
-  "email": "hubertroberts@gmail.com",
-  "tea": "Matcha",
-  "frequency": 0
+  "customer_id": 1,
+  "tea_id": 1,
+  "frequency": "weekly"
 }
 ```
-
 
 ### PATCH /api/v1/subscriptions 
 The `PATCH /api/v1/subscriptions` endpoint is currently limited purely to activating or deactivating a given subscription. Possible functionality would include adding/removing teas, and changing frequency. Status' are represented in binary, with `0` representing `active`, and `1` representing `inactive`, respectively. The endpoint requires a request body who's structure is that of the following:
@@ -56,26 +50,6 @@ The `PATCH /api/v1/subscriptions` endpoint is currently limited purely to activa
   "status": 0
 }
 ```
-
-### GET /api/v1/subscriptions
-The `GET /api/v1/subscriptions` endpoint is the most simple of the endpoints. It just requires an email that exists within the database, which will then give you a serialized set of all the users subscriptions. The endpoint requires a request body who's structure is that of the following:
-
-```json
-{
-  "email": "hubertroberts@gmail.com"
-}
-```
-
-### DELETE /api/v1/subscriptions
-The 'DELETE /api/v1/subscriptions' endpoint is used to delete a specific subscription of a given account. There are most-definitely significantly more secure ways I could've approached this endpoint (much more, the entire creation of this application), but it was outside of the scope required for technical project completion. The endpoint requires a request body who's structure is that of the following:
-
-```json
-{
-  "email": "hubertroberts@gmail.com",
-  "subscription_id": "1"
-}
-```
-The email is required to send the user a serialized JSON of all their now currently existing subscriptions.
 
 ## Misc 
 
