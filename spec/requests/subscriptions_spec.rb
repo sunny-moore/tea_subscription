@@ -8,10 +8,11 @@ RSpec.describe 'Subscriptions', type: :request do
                                      address: '111 Vicious St.')
         @tea = Tea.create!(title: 'Green Tea', description: 'Soothing and delicious', temperature: 200, brewtime: 5,
                            price: 2.00)
+        @subscription = Subscription.create!(customer_id: @customer.id, tea_id: @tea.id, title: @tea.title,
+                        total_price: @tea.price, frequency: 'weekly', status: 'active')
       end
       it 'can retrieve all of a customers subscriptions' do
-        subscription = Subscription.create!(customer_id: @customer.id, tea_id: @tea.id, title: @tea.title,
-                                            total_price: @tea.price, frequency: 'weekly', status: 'active')
+        
         get api_v1_subscriptions_path('customer_id' => @customer.id)
 
         expect(response).to be_successful
@@ -64,10 +65,27 @@ RSpec.describe 'Subscriptions', type: :request do
         expect(subs[:attributes][:total_price]).to be_a Float
         expect(subs[:attributes][:total_price]).to eq(8.0)
       end
+      it 'can update a subscriptions status to cancelled' do
+        subscription_params = {
+          "subscription_id": @subscription.id
+        }
+        headers = { 'CONTENT_TYPE' => 'application/json' }
+
+        put api_v1_subscriptions_path, headers: headers, params: JSON.generate(subscription_params)
+
+        expect(response).to be_successful
+        expect(response.status).to eq(200)
+
+        results = JSON.parse(response.body, symbolize_names: true)
+        subs = results[:data]
+
+        expect(subs).to be_a Hash
+        expect(subs[:attributes][:status]).to eq('cancelled')
+      end
     end
   end
   context 'Sad Path' do
-    it 'returns error if customer is not found' do
+    it 'creating a subscription returns error if customer is not found' do
       get api_v1_subscriptions_path('customer_id' => 10)
 
       expect(response).to_not be_successful
