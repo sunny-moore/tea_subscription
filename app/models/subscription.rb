@@ -1,6 +1,4 @@
 class Subscription < ApplicationRecord
-
-
   validates_presence_of :customer_id, :tea_id, :title, :total_price, :frequency, :status
   belongs_to :customer
   belongs_to :tea
@@ -20,6 +18,4 @@ class Subscription < ApplicationRecord
       tea_price * 0
     end
   end
-  
-
 end
