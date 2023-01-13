@@ -42,21 +42,24 @@ This endpoint is used for creating a new subscription for a customer. The freque
 ```
 
 ### PATCH /api/v1/subscriptions 
-The `PATCH /api/v1/subscriptions` endpoint is currently limited purely to activating or deactivating a given subscription. Possible functionality would include adding/removing teas, and changing frequency. Status' are represented in binary, with `0` representing `active`, and `1` representing `inactive`, respectively. The endpoint requires a request body who's structure is that of the following:
+This endpoint is will 'cancel' an active subscription or return an error if the subscription is not found or already cancelled. It requires the following in the request body
 
 ```json
 {
   "subscription_id": "1",
-  "status": 0
 }
 ```
+## Testing
+This app uses rspec for testing.  To run the testing suite run:
+```sh
+bundle exec rspec
+```
 
-## Misc 
+## Further Considerations 
 
-Because this was a short take-home project for the program I'm attending, there's a lot of functionality that doesn't exist that seemingly should, or things that don't seem as rounded out in structure because there wasn't enough time to implement it. Several things that I would do if given more time to improve this application and make it more rounded it out would be:
+Due to time constraints, I kept this app as simple as possible. With more time, I would have considered a design more suited to business logic, and more scalable.  Other changes I would make:
 
-* Automatically creating an API key attached to each customer and creating those checks (e.g., a required field within the body of a request) to restrict who can make requests to the application 
-* Restrict user CRUD functionality solely to their own subscriptions 
-* Make subscription cost based off of the types of tea, quantity, and frequency, instead of having it statically set
-* Create tea 'bundles' to more effectively show why the database was structured the way it was 
-* Find teas based off of more unique, salted names, or purely by ID instead of by plain names in both request bodies and the controller
+* Full CRUD functionality for subscriptions
+* Full CRUD functionality for customers
+* Full CRUD functionality for teas or possibly importing teas from an external API
+* More sad path testing
